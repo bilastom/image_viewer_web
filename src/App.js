@@ -2,14 +2,17 @@ import React from 'react';
 import {
   BrowserRouter as Router,
   Route,
+  Switch,
   Link
 } from "react-router-dom";
 
-import { makeStyles } from '@material-ui/core/styles';
 import { AppBar, Button, Toolbar, Typography } from '@material-ui/core'
+import { makeStyles } from '@material-ui/core/styles';
 
 import LoginPage from './components/LoginPage'
 import Home from './components/Home'
+import AuthenticatedRoute from './routes/AuthenticatedRoute'
+import Logout from './components/Logout'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -23,6 +26,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+
 export default function App() {
   const classes = useStyles();
   return(
@@ -31,14 +35,16 @@ export default function App() {
         <AppBar position="static">
           <Toolbar>
             <Typography variant="h6" className={classes.title} >
-              Image Viewer
+              Simple Image Viewer
             </Typography>
-            <Button component={Link} to="/login" color="inherit">Login</Button>
+            {localStorage.getItem('jwt') ? <Logout /> : <Button component={Link} to="/login" color="inherit">Login</Button>}
           </Toolbar>
         </AppBar>
-      
-        <Route exact path="/" component={Home} />
-        <Route path="/login" render={props => <LoginPage {...props} />} />
+        <Switch>
+          <AuthenticatedRoute exact path="/" component={Home} />
+          <Route path="/login" render={props => <LoginPage {...props} />} />
+          <Route path="/logout" />
+        </Switch>
       </Router>
     </div>
   )
