@@ -1,36 +1,22 @@
 import React, { Component } from "react"
+import { connect } from "react-redux"
 import { Button } from "@material-ui/core"
-import axios from 'axios';
-import { Redirect } from "react-router-dom";
+import { logoutUser } from "../actions"
 
-const url = `${process.env.REACT_APP_SERVER_URL}/users/sign_out.json`
-
-export default class Logout extends Component {
-  constructor(props){
-    super(props)
-    this.state = { 
-      redirect: false
-    }
-  }
-
+class Logout extends Component {
   handleLogout = (e) => {
     e.preventDefault()
-    const headers = { 'Authorization': localStorage.getItem('jwt') }
-    axios.delete(url, headers).then(res => {
-      localStorage.removeItem('jwt')
-      this.setState({ redirect: true })
-    })
+
+    this.props.logoutUser()
   }
 
   render = () => {
-    if(this.state.redirect) {
-      return(
-        <Redirect to='/login' />
-      )
-    }
-
     return(
       <Button onClick={this.handleLogout} color="inherit">Logout</Button>
     )
   }
 }
+
+const mapDispatchToProps = { logoutUser }
+
+export default connect(null, mapDispatchToProps)(Logout)

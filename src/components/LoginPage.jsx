@@ -1,9 +1,10 @@
 import React, { Component } from "react"
-import axios from 'axios';
+import { connect } from "react-redux"
+
 import { Button, Container, TextField, Typography } from "@material-ui/core"
 import { withStyles } from '@material-ui/core/styles';
-import { emailRegex } from '../shared/Variables'
-import { Redirect } from "react-router-dom";
+import { emailRegex } from '../constants/utils'
+import { loginUser } from "../actions"
 
 const styles = theme => ({
   paper: {
@@ -11,10 +12,6 @@ const styles = theme => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-  },
-  form: {
-    width: '100%',
-    marginTop: theme.spacing(1),
   },
   submit: {
     margin: theme.spacing(3, 0, 2),
@@ -46,41 +43,13 @@ class LoginPage extends Component {
 
   handleFormSubmit = (e) => {
     e.preventDefault()
-    const url = `${process.env.REACT_APP_SERVER_URL}/users/sign_in.json`
-    const { email, password} = this.state
-    const params = { user: { email, password } }
-    axios.post(url, params).then(res => {
-      localStorage.setItem('jwt', res.headers.authorization)
-      this.setState({ redirect: true })
-    }).catch((error) => {
-      if(error.response) {
-        const message = error.response.data.error 
-        this.setState({ emailError: message, passwordError: message }, () => console.log(this.state))
-      } else {
-        console.log(error.message)
-      }
-    })
-  }
 
-  performRedirect = () => {
-    try {
-      const path = this.props.location.state.from.pathname
-      return(
-        <Redirect to={{pathname: path, state: { loggedIn: true }}} />
-      )
-    } catch(error) {
-      return(
-        <Redirect to="/" />
-      )
-    }
+    const { email, password} = this.state
+
+    if(email && password) this.props.loginUser(email, password, this.props.history)
   }
 
   render = () => {
-    if (localStorage.getItem("jwt") && this.state.redirect) {
-      return(
-        this.performRedirect()
-      )
-    }
 
     const { classes } = this.props
     const { handleEmailChange, handleFormSubmit, handlePasswordChange, state } = this
@@ -140,4 +109,6 @@ class LoginPage extends Component {
   }
 }
 
-export default  withStyles(styles)(LoginPage)
+const mapDispatchToProps = { loginUser }
+
+export default connect(null, mapDispatchToProps)(withStyles(styles)(LoginPage))
