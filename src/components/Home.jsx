@@ -1,9 +1,12 @@
-import React from 'react'
+import React from 'react';
+import Modal from './UploadModal'
 
 const Home = () => {
-  return(
-    <div>Hello Home</div>
-  )
+  return (
+    <div>
+      <Modal />
+    </div>
+  );
 }
 
-export default Home;
+export default Home
