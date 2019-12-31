@@ -8,6 +8,7 @@ import { connect } from "react-redux"
 
 import LoginPage from './components/LoginPage'
 import Home from './components/Home'
+import UploadPage from './components/UploadPage'
 import AuthenticatedRoute from './routes/AuthenticatedRoute'
 import TitleBar from './components/TitleBar'
 
@@ -20,6 +21,7 @@ class App extends Component {
           <TitleBar />
           <Switch>
             <AuthenticatedRoute exact path="/" component={Home} authenticated={this.props.authenticated} />
+            <AuthenticatedRoute path="/upload" component={UploadPage} authenticated={this.props.authenticated} /> 
             <Route path="/login" render={props => <LoginPage {...props} />} />
             <Route path="/logout"/>
           </Switch>
