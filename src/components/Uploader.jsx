@@ -3,62 +3,53 @@ import { connect } from "react-redux"
 import DropzoneComponent from 'react-dropzone-component';
 import "dropzone/dist/dropzone.css";
 import "react-dropzone-component/styles/filepicker.css";
-import { handleError } from '../actions' 
+import { handleError, uploadImage } from '../actions' 
 
 const url = `${process.env.REACT_APP_SERVER_URL}/uploads.json`
 
 class Uploader extends React.Component {
   constructor(props) {
-      super(props);
+    super(props);
 
-      this.djsConfig = {
-          addRemoveLinks: true,
-          acceptedFiles: "image/jpeg,image/png,image/gif",
-          headers: { 'Authorization': localStorage.getItem('jwt') },
-          resizeWidth: 800,
-          resizeHeight: 800
-      };
+    this.djsConfig = {
+      acceptedFiles: "image/jpeg,image/png,image/gif",
+      headers: { 'Authorization': localStorage.getItem('jwt') },
+      resizeWidth: 800,
+      resizeHeight: 800
+    };
 
-      this.componentConfig = {
-          iconFiletypes: ['.jpg', '.png', '.gif'],
-          showFiletypeIcon: true,
-          postUrl: url,
-      };
+    this.componentConfig = {
+      iconFiletypes: ['.jpg', '.png', '.gif'],
+      showFiletypeIcon: true,
+      postUrl: url,
+    };
 
-      this.callbackArray = [() => console.log('Hi!'), () => console.log('Ho!')];
+    this.success = (_file, response) => {
+     this.props.uploadImage(response.data)
+    }
 
-      this.callback = () => console.log('Hello!');
+    this.error = (_file, _message, error) => {
+      if(error) this.props.handleError(error)
+    }
 
-      this.success = (file, response) => {
-          debugger
-      }
-
-      this.removedfile = file => console.log('removing...', file);
-
-      this.error = (_file, _message, error) => {
-          if(error) this.props.handleError(error)
-      }
-
-      this.dropzone = null;
+    this.dropzone = null;
   }
 
   render() {
-      const config = this.componentConfig;
-      const djsConfig = this.djsConfig;
+    const config = this.componentConfig;
+    const djsConfig = this.djsConfig;
 
-      const eventHandlers = {
-          init: dz => this.dropzone = dz,
-          drop: this.callbackArray,
-          addedfile: this.callback,
-          success: this.success,
-          error: this.error,
-          removedfile: this.removedfile
-      }
+    const eventHandlers = {
+      init: dz => this.dropzone = dz,
+      addedfile: this.callback,
+      success: this.success,
+      error: this.error,
+    }
 
-      return <DropzoneComponent config={config} eventHandlers={eventHandlers} djsConfig={djsConfig} />
+    return <DropzoneComponent config={config} eventHandlers={eventHandlers} djsConfig={djsConfig} />
   }
 }
 
-const mapDispatchToProps = { handleError }
+const mapDispatchToProps = { handleError, uploadImage }
 
 export default connect(null, mapDispatchToProps)(Uploader)

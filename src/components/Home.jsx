@@ -1,30 +1,35 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux"
-
 import {
   Link
 } from "react-router-dom";
 
 import Modal from './UploadModal'
 import { getImages } from "../actions"
-import {
-  GridListTile, 
-  GridListTileBar, 
-} from "@material-ui/core"
 import { withStyles } from '@material-ui/core/styles';
 
 const styles = {
   container: {
     display: 'flex',
     flexWrap: 'wrap',
+    padding: 5
   },
-  img: {
+  image: {
     margin: 5,
+    position: 'relative'
   },
   title: {
+    textDecoration: 'none',
     position: 'absolute',
-    bottom: 20
+    bottom: 0,
+    width: '100%',
+    backgroundColor: 'black',
+    color: 'white',
+    opacity: 0.7
   },
+  titleText: {
+    marginLeft: 10
+  }
 }
 
 class Home extends Component {
@@ -39,12 +44,10 @@ class Home extends Component {
           {this.props.images.map(({id, filename, thumbnail_url}) => (
             <Link key={id} to={`/images/${id}`} state={{filename }}>
               <div style={styles.image}>
-                <GridListTile>
-                  <img src={thumbnail_url} alt={filename} />
-                  <GridListTileBar
-                    title={filename}
-                  />
-                </GridListTile>
+                <img src={thumbnail_url} alt={filename} />
+                <div style={styles.title}>
+                  <p style={styles.titleText}>{filename}</p>
+                </div>
               </div>
             </Link>
           ))}

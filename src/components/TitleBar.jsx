@@ -20,7 +20,6 @@ class TitleBar extends Component {
       <AppBar position="static">
         <Toolbar>
           <Link to='/' variant="h6" style={styles.link}>Image Viewer</Link>
-          { authenticated && <Button component={Link} to="/upload" color="inherit">Upload</Button> }
           { authenticated ? <Logout /> : <Button component={Link} to="/login" color="inherit">Login</Button> }
         </Toolbar>
       </AppBar>
